@@ -38,3 +38,4 @@ API/migrations/*
 !__init__.py
 
 media/*
+uploads/*

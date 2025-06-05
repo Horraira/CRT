@@ -10,6 +10,7 @@ from resume_core import cvparser
 
 from drf_spectacular.utils import extend_schema
 
+
 class UploadCVJobView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -23,10 +24,9 @@ class UploadCVJobView(APIView):
         if serializer.is_valid():
             # Step 1: Save the model instance
             instance = serializer.save(user=request.user)
-
             # Step 2: Access and read the uploaded PDF file
             cv_file = instance.cv_file
-            
+
             # Read content (uploaded as InMemoryUploadedFile or TempFile)
             file_content = cv_file.read()
 
@@ -38,11 +38,14 @@ class UploadCVJobView(APIView):
                 return Response({"error": str(e)}, status=500)
 
             # Step 4: Optionally store or return parsed_data
-            return Response({
-                "message": "Upload successful",
-                "id": instance.id,
-                "parsed_resume": parsed_data
-            }, status=201)
+            return Response(
+                {
+                    "message": "Upload successful",
+                    "id": instance.id,
+                    "parsed_resume": parsed_data,
+                },
+                status=201,
+            )
 
         return Response(serializer.errors, status=400)
 
