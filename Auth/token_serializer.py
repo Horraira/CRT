@@ -1,11 +1,9 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
-User = get_user_model()
-
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = 'email'  # explicitly define the email field
+    username_field = User.EMAIL_FIELD  # officially supported by DRF-SimpleJWT
 
     def validate(self, attrs):
         email = attrs.get("email")
@@ -16,14 +14,20 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
         if not password:
             raise serializers.ValidationError({"password": "This field is required."})
 
-        # ✅ Required for the underlying logic of SimpleJWT
+        # Set 'username' key so parent validate() works
         attrs["username"] = email
 
-        return super().validate(attrs)
+        # Let the parent do the token stuff
+        data = super().validate(attrs)
+
+        # Add user info to response
+        data["user_id"] = self.user.id
+        data["email"] = self.user.email
+
+        return data
 
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Optionally include custom claims
         token["email"] = user.email
         return token
