@@ -9,14 +9,18 @@ from decouple import config
 
 client = OpenAI(api_key=config("OPENAI_API_KEY"))
 
+
 # === Resume Parsing Logic ===
 def extract_text_from_pdf(file_content: bytes) -> str:
     try:
         pdf_reader = PdfReader(io.BytesIO(file_content))
-        text_parts = [page.extract_text() for page in pdf_reader.pages if page.extract_text()]
+        text_parts = [
+            page.extract_text() for page in pdf_reader.pages if page.extract_text()
+        ]
         return "\n".join(text_parts).strip()
     except Exception as e:
         raise ValueError(f"Error reading PDF: {e}")
+
 
 def parse_resume_with_openai(resume_text: str) -> Dict[str, Any]:
     prompt = """
@@ -82,35 +86,19 @@ Return the extracted information in valid JSON format only. If any field is miss
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant that extracts resume data and returns structured JSON."},
-                {"role": "user", "content": f"{prompt}\n\nResume Content:\n{resume_text}"}
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that extracts resume data and returns structured JSON.",
+                },
+                {
+                    "role": "user",
+                    "content": f"{prompt}\n\nResume Content:\n{resume_text}",
+                },
             ],
             temperature=0.0,
             max_tokens=2000,
-            response_format={"type": "json_object"}
+            response_format={"type": "json_object"},
         )
         return json.loads(response.choices[0].message.content)
     except Exception as e:
         raise RuntimeError(f"Failed to parse resume: {e}")
-
-# === FastAPI App ===
-#app = FastAPI(title="Resume Parser API")
-# ###
-# @app.post("/parse-resume")
-# async def parse_resume(file: UploadFile = File(...)):
-#     if file.content_type != "application/pdf":
-#         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
-
-#     try:
-#         file_content = await file.read()
-#         extracted_text = extract_text_from_pdf(file_content)
-
-#         if not extracted_text:
-#             raise HTTPException(status_code=422, detail="Could not extract text from PDF.")
-
-#         parsed_data = parse_resume_with_openai(extracted_text)
-#         return {"status": "success", "data": parsed_data}
-
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-# ###

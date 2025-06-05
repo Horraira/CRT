@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -100,6 +101,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=3),  # Access token valid for 15 minutes
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=3),  # Refresh token valid for 1 day
+}
 
 LANGUAGE_CODE = "en-us"
 
