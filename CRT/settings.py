@@ -23,9 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-u3gt*=11b_yr!f0))jo7yjdmiyda9r&^g27h#3^p@&fi+k%dw2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
+#DEBUG = False # change to False in production
+DEBUG = True  # Set to True for development; change to False in production
+#ALLOWED_HOSTS = ['127.0.0.1', 'localhost']  # Allow local development server
 ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -37,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',  # Django REST Framework for API support
+    'cv_tailor',  # Your custom app for CV tailoring
 ]
 
 MIDDLEWARE = [
