@@ -1,36 +1,14 @@
-from django.contrib.auth.models import User
+# Auth/views.py
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from rest_framework import status
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema
 
-
-# 🔐 Serializer for Registration
-class RegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=True)
-    password = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = ['email', 'password']
-
-    def create(self, validated_data):
-        email = validated_data['email']
-        password = validated_data['password']
-
-        # 👇 Create user with email as both email and username
-        user = User.objects.create_user(
-            username=email,       # 🔐 Required by Django's default User model
-            email=email,
-            password=password
-        )
-        user.is_active = True  # Optional, but good to ensure
-        user.save()
-        return user
+from .serializers import RegisterSerializer  # Import from new file
 
 
-# 🔐 API View for Registration
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 

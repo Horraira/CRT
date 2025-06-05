@@ -1,6 +1,7 @@
 .idea/
 venv/
 env/
+.env
 __pycache__/
 # Django #
 *.log
