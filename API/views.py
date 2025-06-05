@@ -19,7 +19,7 @@ class UploadCVJobView(APIView):
         description="Upload CV and job description",
     )
     def post(self, request, format=None):
-        serializer = CVJobInputSerializer(data=request.data)
+        serializer = CVJobInputSerializer(data=request.data, files=request.FILES)
         if serializer.is_valid():
             # Step 1: Save the model instance
             instance = serializer.save(user=request.user)
