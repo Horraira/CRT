@@ -18,9 +18,7 @@ class RegisterView(APIView):
         description="Register a new user with email and password",
     )
     def post(self, request):
-        print("RegisterView POST request received")
         serializer = RegisterSerializer(data=request.data)
-        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(

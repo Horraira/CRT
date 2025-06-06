@@ -1,9 +1,10 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth.models import User
 from rest_framework import serializers
+from .models import CustomUser
+
 
 class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = User.EMAIL_FIELD  # officially supported by DRF-SimpleJWT
+    username_field = CustomUser.EMAIL_FIELD
 
     def validate(self, attrs):
         email = attrs.get("email")
