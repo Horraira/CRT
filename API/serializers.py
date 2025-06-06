@@ -22,6 +22,8 @@ class ResumeSerializer(serializers.ModelSerializer):
 
 
 class PersonalInfoSerializer(serializers.ModelSerializer):
+    profile_picture_url = serializers.SerializerMethodField()
+
     class Meta:
         model = PersonalInfo
         fields = [
@@ -33,7 +35,14 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
             "location",
             "linkedin",
             "website",
+            "profile_picture",
+            "profile_picture_url",
         ]
+
+    def get_profile_picture_url(self, obj):
+        if obj.profile_picture:
+            return self.context["request"].build_absolute_uri(obj.profile_picture.url)
+        return None
 
 
 class ExperienceSerializer(serializers.ModelSerializer):

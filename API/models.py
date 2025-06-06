@@ -31,6 +31,9 @@ class PersonalInfo(models.Model):
     location = models.CharField(max_length=100, blank=True)
     linkedin = models.URLField(blank=True)
     website = models.URLField(blank=True)
+    profile_picture = models.ImageField(
+        upload_to="profile_pictures/", null=True, blank=True
+    )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
