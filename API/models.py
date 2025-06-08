@@ -21,14 +21,14 @@ class Resume(models.Model):
 
 
 class PersonalInfo(models.Model):
-    resume = models.OneToOneField(
-        Resume, on_delete=models.CASCADE, related_name="personal_info"
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="personal_info"
     )
     first_name = models.CharField(max_length=50, validators=[MinLengthValidator(3)])
     last_name = models.CharField(max_length=50, validators=[MinLengthValidator(3)])
     email = models.EmailField()
     phone = models.CharField(max_length=20, blank=True)
-    location = models.CharField(max_length=100, blank=True)
+    address = models.CharField(max_length=100, blank=True)
     linkedin = models.URLField(blank=True)
     website = models.URLField(blank=True)
     profile_picture = models.ImageField(
@@ -40,8 +40,8 @@ class PersonalInfo(models.Model):
 
 
 class Experience(models.Model):
-    resume = models.ForeignKey(
-        Resume, on_delete=models.CASCADE, related_name="experiences"
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="experiences"
     )
     company = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
@@ -63,8 +63,8 @@ class Experience(models.Model):
 
 
 class Education(models.Model):
-    resume = models.ForeignKey(
-        Resume, on_delete=models.CASCADE, related_name="educations"
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="educations"
     )
     school = models.CharField(max_length=100)
     degree = models.CharField(max_length=100)
@@ -87,7 +87,9 @@ class Education(models.Model):
 
 
 class Skill(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name="skills")
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="skills"
+    )
     name = models.CharField(max_length=50)
     level = models.CharField(
         max_length=20,
@@ -101,7 +103,7 @@ class Skill(models.Model):
     category = models.CharField(max_length=50, blank=True)
 
     class Meta:
-        unique_together = ["resume", "name"]
+        unique_together = ["user", "name"]
 
     def __str__(self):
         return f"{self.name} ({self.level})"
@@ -120,8 +122,8 @@ class Summary(models.Model):
 
 
 class Certification(models.Model):
-    resume = models.ForeignKey(
-        Resume, on_delete=models.CASCADE, related_name="certifications"
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="certifications"
     )
     name = models.CharField(max_length=100)
     issuer = models.CharField(max_length=100)
