@@ -26,18 +26,8 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PersonalInfo
-        fields = [
-            "id",
-            "first_name",
-            "last_name",
-            "email",
-            "phone",
-            "location",
-            "linkedin",
-            "website",
-            "profile_picture",
-            "profile_picture_url",
-        ]
+        fields = "__all__"
+        read_only_fields = ["user", "profile_picture_url"]
 
     def get_profile_picture_url(self, obj):
         if obj.profile_picture:

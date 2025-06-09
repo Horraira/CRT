@@ -51,9 +51,14 @@ class ResumeViewSet(viewsets.ModelViewSet):
 
 
 class PersonalInfoViewSet(viewsets.ModelViewSet):
-    queryset = PersonalInfo.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = PersonalInfoSerializer
+
+    def get_queryset(self):
+        return PersonalInfo.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class ExperienceViewSet(viewsets.ModelViewSet):

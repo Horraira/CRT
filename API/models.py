@@ -34,6 +34,9 @@ class PersonalInfo(models.Model):
     profile_picture = models.ImageField(
         upload_to="profile_pictures/", null=True, blank=True
     )
+    city = models.CharField(max_length=50, blank=True)
+    country = models.CharField(max_length=50, blank=True)
+    zip_code = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -43,23 +46,24 @@ class Experience(models.Model):
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="experiences"
     )
-    company = models.CharField(max_length=100)
-    position = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
-    is_current = models.BooleanField(default=False)
-    description = models.TextField()
-    location = models.CharField(max_length=100, blank=True)
+    employer = models.CharField(max_length=100)
+    jobTitle = models.CharField(max_length=100)
+    startDate = models.DateField()
+    endDate = models.DateField(null=True, blank=True)
+    isCurrent = models.BooleanField(default=False)
+    jobDescription = models.TextField()
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
 
     class Meta:
-        ordering = ["-start_date"]
+        ordering = ["-startDate"]
 
     def clean(self):
-        if not self.is_current and not self.end_date:
+        if not self.isCurrent and not self.endDate:
             raise ValidationError("End date is required if not current position")
 
     def __str__(self):
-        return f"{self.position} at {self.company}"
+        return f"{self.jobTitle} at {self.employer}"
 
 
 class Education(models.Model):
@@ -68,30 +72,31 @@ class Education(models.Model):
     )
     school = models.CharField(max_length=100)
     degree = models.CharField(max_length=100)
-    field = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
-    is_current = models.BooleanField(default=False)
-    description = models.TextField(blank=True)
-    location = models.CharField(max_length=100, blank=True)
+    fieldOfStudy = models.CharField(max_length=100)
+    startDate = models.DateField()
+    endDate = models.DateField(null=True, blank=True)
+    isCurrent = models.BooleanField(default=False)
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    gpa = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
 
     class Meta:
-        ordering = ["-start_date"]
+        ordering = ["-startDate"]
 
     def clean(self):
-        if not self.is_current and not self.end_date:
+        if not self.isCurrent and not self.endDate:
             raise ValidationError("End date is required if not current education")
 
     def __str__(self):
-        return f"{self.degree} in {self.field} at {self.school}"
+        return f"{self.degree} in {self.fieldOfStudy} at {self.school}"
 
 
 class Skill(models.Model):
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="skills"
     )
-    name = models.CharField(max_length=50)
-    level = models.CharField(
+    skill = models.CharField(max_length=50)
+    proficiency = models.CharField(
         max_length=20,
         choices=[
             ("beginner", "Beginner"),
@@ -103,10 +108,10 @@ class Skill(models.Model):
     category = models.CharField(max_length=50, blank=True)
 
     class Meta:
-        unique_together = ["user", "name"]
+        unique_together = ["user", "skill"]
 
     def __str__(self):
-        return f"{self.name} ({self.level})"
+        return f"{self.skill} ({self.proficiency})"
 
 
 class Summary(models.Model):
