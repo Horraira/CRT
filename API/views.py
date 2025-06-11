@@ -66,16 +66,10 @@ class ExperienceViewSet(viewsets.ModelViewSet):
     serializer_class = ExperienceSerializer
 
     def get_queryset(self):
-        resume_id = self.kwargs.get("resume_pk")
-        return Experience.objects.filter(
-            resume_id=resume_id, resume__user=self.request.user
-        )
+        return Experience.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        resume = get_object_or_404(
-            Resume, id=self.kwargs.get("resume_pk"), user=self.request.user
-        )
-        serializer.save(resume=resume)
+        serializer.save(user=self.request.user)
 
 
 class EducationViewSet(viewsets.ModelViewSet):

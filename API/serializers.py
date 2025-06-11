@@ -38,21 +38,13 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
 class ExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Experience
-        fields = [
-            "id",
-            "company",
-            "position",
-            "start_date",
-            "end_date",
-            "is_current",
-            "description",
-            "location",
-        ]
+        fields = "__all__"
+        read_only_fields = ["user"]
 
     def validate(self, data):
-        if not data.get("is_current") and not data.get("end_date"):
+        if not data.get("is_current") and not data.get("endDate"):
             raise serializers.ValidationError(
-                {"end_date": "End date is required if not current position"}
+                {"endDate": "End date is required if not current position"}
             )
         return data
 
