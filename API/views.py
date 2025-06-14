@@ -77,16 +77,10 @@ class EducationViewSet(viewsets.ModelViewSet):
     serializer_class = EducationSerializer
 
     def get_queryset(self):
-        resume_id = self.kwargs.get("resume_pk")
-        return Education.objects.filter(
-            resume_id=resume_id, resume__user=self.request.user
-        )
+        return Education.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        resume = get_object_or_404(
-            Resume, id=self.kwargs.get("resume_pk"), user=self.request.user
-        )
-        serializer.save(resume=resume)
+        serializer.save(user=self.request.user)
 
 
 class SkillViewSet(viewsets.ModelViewSet):
@@ -94,14 +88,10 @@ class SkillViewSet(viewsets.ModelViewSet):
     serializer_class = SkillSerializer
 
     def get_queryset(self):
-        resume_id = self.kwargs.get("resume_pk")
-        return Skill.objects.filter(resume_id=resume_id, resume__user=self.request.user)
+        return Skill.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        resume = get_object_or_404(
-            Resume, id=self.kwargs.get("resume_pk"), user=self.request.user
-        )
-        serializer.save(resume=resume)
+        serializer.save(user=self.request.user)
 
 
 class SummaryViewSet(viewsets.ModelViewSet):

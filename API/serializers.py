@@ -52,22 +52,13 @@ class ExperienceSerializer(serializers.ModelSerializer):
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
-        fields = [
-            "id",
-            "school",
-            "degree",
-            "field",
-            "start_date",
-            "end_date",
-            "is_current",
-            "description",
-            "location",
-        ]
+        fields = "__all__"
+        read_only_fields = ["user"]
 
     def validate(self, data):
-        if not data.get("is_current") and not data.get("end_date"):
+        if not data.get("isCurrent") and not data.get("endDate"):
             raise serializers.ValidationError(
-                {"end_date": "End date is required if not current education"}
+                {"endDate": "End date is required if not current education"}
             )
         return data
 
@@ -75,7 +66,8 @@ class EducationSerializer(serializers.ModelSerializer):
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
-        fields = ["id", "name", "level", "category"]
+        fields = "__all__"
+        read_only_fields = ["user"]
 
 
 class SummarySerializer(serializers.ModelSerializer):
