@@ -1,10 +1,7 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import RetrieveAPIView
-from resume_core import cvparser
-
+from rest_framework import generics
+from Auth.models import CustomUser
 
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
@@ -28,6 +25,7 @@ from .serializers import (
     SkillSerializer,
     SummarySerializer,
     CertificationSerializer,
+    UserInfoSerializer,
 )
 
 
@@ -99,16 +97,10 @@ class SummaryViewSet(viewsets.ModelViewSet):
     serializer_class = SummarySerializer
 
     def get_queryset(self):
-        resume_id = self.kwargs.get("resume_pk")
-        return Summary.objects.filter(
-            resume_id=resume_id, resume__user=self.request.user
-        )
+        return Summary.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        resume = get_object_or_404(
-            Resume, id=self.kwargs.get("resume_pk"), user=self.request.user
-        )
-        serializer.save(resume=resume)
+        serializer.save(user=self.request.user)
 
 
 class CertificationViewSet(viewsets.ModelViewSet):
@@ -126,3 +118,11 @@ class CertificationViewSet(viewsets.ModelViewSet):
             Resume, id=self.kwargs.get("resume_pk"), user=self.request.user
         )
         serializer.save(resume=resume)
+
+
+class UserInformationView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserInfoSerializer
+
+    def get_queryset(self):
+        return CustomUser.objects.filter(id=self.request.user.id)

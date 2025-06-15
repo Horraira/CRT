@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from Auth.models import CustomUser
 from .models import (
     Resume,
     PersonalInfo,
@@ -73,8 +74,8 @@ class SkillSerializer(serializers.ModelSerializer):
 class SummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Summary
-        fields = ["id", "content", "created_at", "updated_at"]
-        read_only_fields = ["created_at", "updated_at"]
+        fields = ["id", "user", "content", "created_at", "updated_at"]
+        read_only_fields = ["created_at", "updated_at", "user"]
 
 
 class CertificationSerializer(serializers.ModelSerializer):
@@ -116,3 +117,23 @@ class ResumeDetailSerializer(serializers.ModelSerializer):
             "certifications",
         ]
         read_only_fields = ["created_at", "updated_at"]
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    personal_info = PersonalInfoSerializer(read_only=True)
+    experience = ExperienceSerializer(many=True, read_only=True, source="experiences")
+    education = EducationSerializer(many=True, read_only=True, source="educations")
+    skills = SkillSerializer(many=True, read_only=True)
+    summary = SummarySerializer(read_only=True, source="user_summary")
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "email",
+            "personal_info",
+            "experience",
+            "education",
+            "skills",
+            "summary",
+        ]

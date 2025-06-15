@@ -8,6 +8,7 @@ from .views import (
     SkillViewSet,
     SummaryViewSet,
     CertificationViewSet,
+    UserInformationView,
 )
 
 router = DefaultRouter()
@@ -23,4 +24,5 @@ router.register(
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("user-info/", UserInformationView.as_view(), name="user-information"),
 ]

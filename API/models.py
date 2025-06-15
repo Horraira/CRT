@@ -115,8 +115,8 @@ class Skill(models.Model):
 
 
 class Summary(models.Model):
-    resume = models.OneToOneField(
-        Resume, on_delete=models.CASCADE, related_name="summary"
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="user_summary"
     )
     content = models.TextField(validators=[MinLengthValidator(50)])
     created_at = models.DateTimeField(auto_now_add=True)
